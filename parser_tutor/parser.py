@@ -23,3 +23,6 @@ def parse(url):
 df = pd.DataFrame(data=parse(URl_TEMPLATE))
 print(df)
 df.to_csv(FILE_NAME)
+
+import scrapy
+
