@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup as bs
 URl_TEMPLATE = 'https://www.work.ua/ru/jobs-odesa/?page=2'
 FILE_NAME = 'result.csv'
 
+
 def parse(url):
     result_list = {'href': [], 'title': [], 'about': []}
     r = requests.get(url)
@@ -20,9 +21,7 @@ def parse(url):
         result_list['about'].append(info.text)
     return result_list
 
+
 df = pd.DataFrame(data=parse(URl_TEMPLATE))
 print(df)
 df.to_csv(FILE_NAME)
-
-import scrapy
-
