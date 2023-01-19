@@ -3,16 +3,14 @@ import scrapy
 
 class ReviewspiderSpider(scrapy.Spider):
     name = 'reviewspider'
-    allowed_domains = ['amazon.com']
-    start_urls = ['http://amazon.com/']
+    allowed_domains = ['ab.onliner.by']
+    start_urls = ['https://ab.onliner.by/']
 
     def parse(self, response):
-        star_rating = response.xpath('//span[@class="a-icon-alt"]/text()').extract()
-        comments = response.xpath('//span[@class="a-size-base review-text review-text-content"]/span/text()').extract()
-        count = 0
+        avto = response.xpath('//span[@class="a-icon-alt"]/text()').extract()
+        year = response.xpath('//span[@class="a-size-base review-text review-text-content"]/span/text()').extract()
 
         for item in zip(star_rating, comments):
-            # создаем словарь для хранения собранной информации
             scraped_data = {
                 'Рейтинг': item[0],
                 'Отзыв': item[1],
