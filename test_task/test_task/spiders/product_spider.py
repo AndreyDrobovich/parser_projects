@@ -4,9 +4,14 @@ from test_task.items import ProductItem
 
 class ProductSpider(scrapy.Spider):
     name = "products"
-    start_urls = ["https://www.petsonic.com/farmacia-para-gatos/"]
+    start_urls = [
+        "https://www.petsonic.com/farmacia-para-gatos/?p=%s" % page
+        for page in range(1, 11)
+    ]
+    number = 1
 
     def parse(self, response):
+
         product_links = response.xpath(
             '//div[@class="product-desc display_sd"]/a/@href'
         ).extract()
@@ -15,7 +20,8 @@ class ProductSpider(scrapy.Spider):
 
     def parse_link(self, response):
         name = response.xpath(
-            '//p[@class="product_main_name"]/text()').extract()
+            '//p[@class="product_main_name"]/text()'
+            ).extract()
         count_list = response.xpath(
             '//div[@class="attribute_list"]//span[@class="radio_label"]/text()'
         ).extract()
