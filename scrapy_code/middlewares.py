@@ -2,7 +2,6 @@ from scrapy import signals
 
 
 class TestTaskSpiderMiddleware:
-
     @classmethod
     def from_crawler(cls, crawler):
         s = cls()
@@ -21,11 +20,10 @@ class TestTaskSpiderMiddleware:
             yield r
 
     def spider_opened(self, spider):
-        spider.logger.info('Spider opened: %s' % spider.name)
+        spider.logger.info("Spider opened: %s" % spider.name)
 
 
 class TestTaskDownloaderMiddleware:
-
     @classmethod
     def from_crawler(cls, crawler):
         s = cls()
@@ -39,4 +37,4 @@ class TestTaskDownloaderMiddleware:
         return response
 
     def spider_opened(self, spider):
-        spider.logger.info('Spider opened: %s' % spider.name)
+        spider.logger.info("Spider opened: %s" % spider.name)

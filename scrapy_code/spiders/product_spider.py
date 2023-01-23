@@ -1,5 +1,5 @@
 import scrapy
-from test_task.items import ProductItem
+from scrapy_code.items import ProductItem
 
 
 class ProductSpider(scrapy.Spider):
@@ -19,9 +19,7 @@ class ProductSpider(scrapy.Spider):
             yield scrapy.Request(url=link, callback=self.parse_link)
 
     def parse_link(self, response):
-        name = response.xpath(
-            '//p[@class="product_main_name"]/text()'
-            ).extract()
+        name = response.xpath('//p[@class="product_main_name"]/text()').extract()
         count_list = response.xpath(
             '//div[@class="attribute_list"]//span[@class="radio_label"]/text()'
         ).extract()

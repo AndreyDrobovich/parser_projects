@@ -102,3 +102,10 @@ pip-selfcheck.json
 .history
 .ionide
 text.txt
+
+# Airflow stuff
+logs/
+airflow.db
+airflow.cfg
+unittests.cfg
+webserver_config.py
