@@ -12,3 +12,7 @@ class ProductPipeline:
 
     def process_item(self, item, spider):
         self.writer.writerow(item.values())
+
+class AutoPipeline:
+    def process_item(self, item, spider):
+        print(item)

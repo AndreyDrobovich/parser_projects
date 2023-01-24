@@ -1,5 +1,5 @@
 import scrapy
-from services.scrapy_code.items import ProductItem
+from dags.services.scrapy_code.items import ProductItem
 
 
 class ProductSpider(scrapy.Spider):
