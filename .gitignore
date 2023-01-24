@@ -115,3 +115,6 @@ airflow.db
 airflow.cfg
 unittests.cfg
 webserver_config.py
+
+
+.DS_Store
