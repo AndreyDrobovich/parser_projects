@@ -1,12 +1,13 @@
 import csv
 import json
+import os
 
 from itemadapter import ItemAdapter
 
 
 class ProductPipeline:
     def open_spider(self, spider):
-        self.file = open("dags/services/scrapy_code/data/test.csv", "w", newline="")
+        self.file = open("data/test.csv", "w", newline="")
         self.writer = csv.writer(self.file)
         self.writer.writerow(["Name", "Price", "Image"])
 
