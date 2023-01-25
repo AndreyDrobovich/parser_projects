@@ -1,4 +1,5 @@
 import scrapy
+from dags.services.scrapy_code.configs.spider_mapping import DICT_MAPPING
 
 from dags.services.scrapy_code.items import FlatItem
 
@@ -6,11 +7,11 @@ from dags.services.scrapy_code.items import FlatItem
 class FlatsSpider(scrapy.Spider):
 
     name = "flats"
-    start_urls = [f"https://realt.by/sale/flats/"]
-    flats = []
+    start_urls = [
+        f"https://realt.by/sale/flats/?search=eJwryS%2FPi89LzE1VNXXKycwGUi5AlgGQslV1MVC1dAaRThZg0kXVxVDVwhDMdlSLL04tKS0AKi5KTY4vSC2KL0hMB2m3NTYAAAClF9o%3D"
+    ]
 
-    def append_flats(self, response):
-        self.flats += response.xpath('//a[@class="image mb-0"]/@href').extract()
+    custom_settings = {"dags.services.scrapy_code.pipelines.ProductPipeline": False}
 
     def parse(self, response):
 
@@ -18,13 +19,15 @@ class FlatsSpider(scrapy.Spider):
             response.xpath("//div[@class='paging-list']//a/text()").extract()[-1]
         )
         pages_links = [
-            f"https://realt.by/sale/flats/?page={number}"
+            f"https://realt.by/sale/flats/?search=eJwryS%2FPi89LzE1VNXXKycwGUi5AlgGQslV1MVC1dAaRThZg0kXVxVDVwhDMdlSLL04tKS0AKi5KTY4vSC2KL0hMB2m3NTYAAAClF9o%3D&page={number}"
             for number in range(1, max_page)
         ]
         for link in pages_links:
-            scrapy.Request(url=link, callback=self.append_flats)
-        for link_object in self.flats:
-            scrapy.Request(url=link_object, callback=self.parse_flat_link)
+            yield scrapy.Request(url=link, callback=self.append_flats)
+
+    def append_flats(self, response):
+        for link in response.xpath('//a[@class="image mb-0"]/@href').extract():
+            yield scrapy.Request(url=link, callback=self.parse_flat_link)
 
     def parse_flat_link(self, response):
         item = FlatItem()
@@ -45,15 +48,17 @@ class FlatsSpider(scrapy.Spider):
         item["city"] = full_adress[0].replace("\xa0", "")
         item["adress"] = full_adress[1].replace("\xa0", "")
         item["metro"] = response.xpath("//div/ul/li/span/a/text()").extract()
-        square_floor_year = response.xpath(
+        value_metrics = response.xpath(
             '//div[@class="flex flex-wrap md:justify-start -mt-6 md:mb-0 order-2 mb-6"]//div/text()'
         ).extract()
-        item["main_area"] = square_floor_year[0]
-        item["living_area"] = square_floor_year[1]
-        item["floor"] = square_floor_year[2]
-        item["year"] = square_floor_year[3]
+        name_metrics = response.xpath(
+            '//div[@class="flex flex-wrap md:justify-start -mt-6 md:mb-0 order-2 mb-6"]/div//p/text()'
+        ).extract()
+
+        for number, name in enumerate(name_metrics):
+            item[DICT_MAPPING[name]] = value_metrics[number]
+
         item["description"] = response.xpath(
             "//section[2]/div/div/div//p/text()"
         ).extract()
-
         yield item
