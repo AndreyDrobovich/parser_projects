@@ -1,7 +1,7 @@
 import scrapy
-from dags.services.scrapy_code.configs.spider_mapping import DICT_MAPPING
+from services.scrapy_code.configs.spider_mapping import DICT_MAPPING
 
-from dags.services.scrapy_code.items import FlatItem
+from services.scrapy_code.items import FlatItem
 
 
 class FlatsSpider(scrapy.Spider):
@@ -11,7 +11,11 @@ class FlatsSpider(scrapy.Spider):
         f"https://realt.by/sale/flats/?search=eJwryS%2FPi89LzE1VNXXKycwGUi5AlgGQslV1MVC1dAaRThZg0kXVxVDVwhDMdlSLL04tKS0AKi5KTY4vSC2KL0hMB2m3NTYAAAClF9o%3D"
     ]
 
-    custom_settings = {"dags.services.scrapy_code.pipelines.ProductPipeline": False}
+    custom_settings = {
+        "ITEM_PIPELINES": {
+            "services.scrapy_code.pipelines.JsonWriterPipeline": 300,
+        }
+    }
 
     def parse(self, response):
 
@@ -36,12 +40,18 @@ class FlatsSpider(scrapy.Spider):
         ).extract()
 
         item["name"] = response.xpath("//section/h1/span/text()").extract()
-        item["price_byn"] = response.xpath(
-            '//div[@class="mt-0.5 mb-1.5"]/h2/text()'
-        ).extract()[1]
-        item["price_usd"] = response.xpath(
+        price_byn = response.xpath('//div[@class="mt-0.5 mb-1.5"]/h2/text()').extract()
+        price_usd = response.xpath(
             '//div[@class="mt-0.5 mb-1.5"]/span/text()'
-        ).extract()[2]
+        ).extract()
+        if not price_byn:
+            item["price_byn"] = None
+        else:
+            item["price_usd"] = price_byn[1]
+        if not price_usd:
+            item["price_usd"] = None
+        else:
+            item["price_usd"] = price_usd[1]
         full_adress = response.xpath(
             '//div[@class="md:-order-1 grow flex order-2 mb-6"]/ul/li/a/text()'
         ).extract()
