@@ -35,9 +35,9 @@ services:
   postgres:
     image: postgres:13
     environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
+      POSTGRES_USER: ${POSTGRES_USER_AIRFLOW}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_AIRFLOW}
+      POSTGRES_DB: ${POSTGRES_DB_AIRFLOW}
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
@@ -50,9 +50,9 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: admin
+      POSTGRES_USER: ${POSTGRES_USER_DATA}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_DATA}
+      POSTGRES_DB: ${POSTGRES_DB_DATA}
 
   redis:
     image: redis:latest
