@@ -2,12 +2,15 @@ import csv
 import json
 import os
 
-from itemadapter import ItemAdapter
+from airflow.models import Variable
+
+
+DATA_PATH = Variable.get("DATA_PATH")
 
 
 class ProductPipeline:
     def open_spider(self, spider):
-        self.file = open("data/test.csv", "w", newline="")
+        self.file = open(f"{DATA_PATH}/test.csv", "w", newline="")
         self.writer = csv.writer(self.file)
         self.writer.writerow(["Name", "Price", "Image"])
 
@@ -20,7 +23,7 @@ class ProductPipeline:
 
 class JsonWriterPipeline:
     def open_spider(self, spider):
-        self.file = open("data/flats.jsonl", "w")
+        self.file = open(f"{DATA_PATH}/flats.jsonl", "w")
 
     def close_spider(self, spider):
         self.file.close()
