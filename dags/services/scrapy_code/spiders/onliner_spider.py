@@ -24,7 +24,7 @@ class FlatsSpider(scrapy.Spider):
         )
         pages_links = [
             f"https://realt.by/sale/flats/?search=eJwryS%2FPi89LzE1VNXXKycwGUi5AlgGQslV1MVC1dAaRThZg0kXVxVDVwhDMdlSLL04tKS0AKi5KTY4vSC2KL0hMB2m3NTYAAAClF9o%3D&page={number}"
-            for number in range(1, 3)
+            for number in range(1, 10)
         ]
         for link in pages_links:
             yield scrapy.Request(url=link, callback=self.append_flats)
